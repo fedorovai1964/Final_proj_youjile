@@ -1,11 +1,10 @@
 import allure
 import pytest
+from testdata.DataProvider import DataProvider
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from config import email
-from config import password
 from selenium import webdriver
 
 from configuration.ConfigProvider import ConfigProvider
@@ -35,10 +34,13 @@ def browser():
 
 @pytest.fixture()
 def auth(browser):
+
     """Фикстура для авторизации на сайте YouGile"""
     with allure.step("Авторизоваться"):
         auth_page = AuthPage(browser)
         auth_page.go()
+        email = DataProvider().get_email()
+        password = DataProvider().get_password()
         auth_page.login_as(email, password)
 
 

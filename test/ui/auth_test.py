@@ -2,6 +2,7 @@ from config import email
 import allure
 from pages.AuthPage import AuthPage
 from pages.MainPage import MainPage
+from testdata.DataProvider import DataProvider
 
 
 def test_auth(browser, auth):
@@ -18,6 +19,6 @@ def test_auth(browser, auth):
                      " заканчивается на../account " + current_url + ""):
         assert current_url.endswith("account")
 
-    with allure.step("Проверить, что  почта пользователя ="+email):
+    with allure.step("Проверить, что  почта пользователя ="+DataProvider().get_email()):
         info = main_page.get_account_info()
-        assert info == email
+        assert info == DataProvider().get_email()
