@@ -10,6 +10,13 @@ class AuthPage():
     def __init__(self, driver: WebDriver) -> None:
         self.__url = "https://ru.yougile.com/team/"
         self.__driver = driver
+        self.locators = {
+            "email": "[placeholder='example@mail.ru']",
+            "password": "[autocomplete='current-password']",
+            "sign_in": "div[role='button']",
+            "main_page": "//div[@class='text-sm-semibold"
+                         " text-panel-text-primary cursor-default']"
+        }
 
     @allure.step("Перейти на страницу авторизации")
     def go(self):
@@ -18,26 +25,29 @@ class AuthPage():
     @allure.step("Авторизоваться под  {email}:{password}")
     def login_as(self, email: str, password: str):
         # ожидаем появления поля логина
-        (WebDriverWait(self.__driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "[placeholder='example@mail.ru']"))))
-        your_email = self.__driver.find_element(By.CSS_SELECTOR, "[placeholder='example@mail.ru']")
+        WebDriverWait(self.__driver, 10).until(
+            EC.visibility_of_element_located((
+                By.CSS_SELECTOR, self.locators["email"]),))
+        your_email = self.__driver.find_element(
+            By.CSS_SELECTOR, self.locators["email"])
         your_email.clear()
         your_email.send_keys(email)
 
-
-        your_pass = self.__driver.find_element(By.CSS_SELECTOR, "[autocomplete='current-password']")
+        your_pass = self.__driver.find_element(
+            By.CSS_SELECTOR, self.locators["password"])
         your_pass.clear()
         your_pass.send_keys(password)
 
-        (self.__driver.find_element(By.CSS_SELECTOR, "div[role='button']").click())
+        self.__driver.find_element(
+            By.CSS_SELECTOR, self.locators['sign_in']).click()
 
-        #Ожидаем появления логотипа(убеждаемся что главная страница полностью загружена)
-        (WebDriverWait(self.__driver, 10).until((EC.visibility_of_element_located((By.XPATH, "//div[@class='text-sm-semibold text-panel-text-primary cursor-default']")))))
+        WebDriverWait(self.__driver, 10).until(
+            EC.visibility_of_element_located((
+                By.XPATH, self.locators["main_page"])))
 
-    @allure.step("Убедиться, что загружена главная страница по наличию строки 'My company'")
+
+    @allure.step("Убедиться, что главная страница загружена:есть'My company'")
     def сompany_search(self):
-        search_title = self.__driver.find_element(By.XPATH, "//div[@class='text-sm-semibold text-panel-text-primary cursor-default']").text
+        search_title = self.__driver.find_element(
+            By.XPATH, self.locators["main_page"]).text
         return search_title
-
-
-

@@ -1,7 +1,8 @@
 # Final_proj_youjile
 
 ## Шаблон для автоматизации тестирования на python
-
+Система управления проектами: ru.yougile.com
+Документация API: ru.yougile.com/api-v2
 ### Шаги
 1. Склонировать проект git clone `https://github.com/fedorovai1964/Final_proj_youjile.git`
 2. Установить все зависимости
@@ -34,4 +35,5 @@
 - pip install webdriver-manager
 - _pip install -r requirements.txt_
 - pip install allure-pytest
-- pip3 install requests
+- pip install requests
+- pip install Faker
