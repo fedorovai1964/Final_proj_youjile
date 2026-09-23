@@ -1,8 +1,14 @@
 import allure
 import pytest
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+
 from config import email
 from config import password
 from selenium import webdriver
+
+from configuration.ConfigProvider import ConfigProvider
 from pages.AuthPage import AuthPage
 from api.BoardApi import BoardApi
 
@@ -11,8 +17,16 @@ from api.BoardApi import BoardApi
 def browser():
     """Фикстура для открытия, настройки и закрытия браузера Chrome"""
     with allure.step("Открыть и настроить браузер"):
-        browser = webdriver.Chrome()
-        browser.implicitly_wait(5)
+
+        timeout = ConfigProvider().getint("ui", "timeout")
+
+        browser_name = ConfigProvider().get("ui", "browser_name")
+        if browser_name == "chrome":
+            browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        else:
+            browser = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+
+        browser.implicitly_wait(timeout)
         browser.maximize_window()
     with allure.step("Закрыть браузер"):
         yield browser

@@ -1,17 +1,16 @@
 import requests
 import allure
 from faker import Faker
-from config import base_url
 from config import headers
-from config import projectId
-
+from configuration.ConfigProvider import ConfigProvider
 fake = Faker()
 
 
 class BoardApi():
 
     def __init__(self) -> None:
-        self.base_url = base_url
+        self.__url = ConfigProvider().get_api_url()
+        self.project_id = ConfigProvider().get_project_id()
 
     @staticmethod
     def random_board_name() -> str:
@@ -21,7 +20,7 @@ class BoardApi():
     @allure.step("Получить список всех досок")
     def get_all_boards(self) -> dict:
         """Метод GET для получения списка всех досок"""
-        url = self.base_url + "/boards"
+        url = self.__url + "/boards"
 
         response = requests.request("GET", url, headers=headers)
         return response.json()
@@ -29,10 +28,10 @@ class BoardApi():
     @allure.step("Создать доску")
     def create_board(self, name: str) -> dict:
         """Метод POST для создания новой доски"""
-        url = self.base_url + "/boards"
+        url = self.__url + "/boards"
         payload = {
             'title': name,
-            'projectId': projectId,
+            'projectId': self.project_id,
             'stickers': {
                 'timer': False,
                 'deadline': True,
@@ -48,17 +47,17 @@ class BoardApi():
     @allure.step("Получить доску по ID")
     def find_board(self, id_board: str) -> dict:
         """Метод GET для получения доски по ID"""
-        url = self.base_url + "/boards/" + id_board
+        url = self.__url + "/boards/" + id_board
         response = requests.request("GET", url, headers=headers)
         return response.json()
 
     @allure.step("Изменить название доски по id")
     def update_board(self, id_board: str, name: str):
         """Метод PUT для изменения доски"""
-        url = self.base_url + "/boards/" + id_board
+        url = self.__url + "/boards/" + id_board
         payload = {
             'title': name,
-            'projectId': projectId,
+            'projectId': self.project_id,
             'stickers': {
                 'deadline': True,
                 'assignee': True
@@ -71,7 +70,7 @@ class BoardApi():
     @allure.step("Удалить доску")
     def delete_board(self, id_board: str):
         """Метод PUT для получения удаления доски"""
-        url = self.base_url + "/boards/" + id_board
+        url = self.__url + "/boards/" + id_board
 
         payload = {
             'deleted': True,

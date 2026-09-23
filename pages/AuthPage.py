@@ -3,12 +3,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from configuration.ConfigProvider import ConfigProvider
 
 
 class AuthPage():
 
     def __init__(self, driver: WebDriver) -> None:
-        self.__url = "https://ru.yougile.com/team/"
+
+        self.__url = ConfigProvider().get_ui_url()
         self.__driver = driver
         self.locators = {
             "email": "[placeholder='example@mail.ru']",
